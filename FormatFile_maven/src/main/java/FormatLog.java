@@ -1,7 +1,7 @@
 public class FormatLog {
     public static void main(String[] args){
         if(args.length == 1) {
-            ExtractRequest eRq = new ExtractRequest();
+            ExtractRequest eRq = new ExtractRequest("config.ini");
             //eRq.setAgree("1538257");
             eRq.setAgree(args[0]);
             eRq.findFile();

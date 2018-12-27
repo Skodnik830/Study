@@ -1,19 +1,19 @@
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.*;
+import java.util.Properties;
 
 /**
  *
  */
 public class ExtractRequest {
     // final String PATH_DIR = "c:\\WORK\\Java\\FormatFile\\";
-    final String PATH_DIR = "./LOG/";
-    final String RESULT_DIR = "./RESULT/";
+    private String PATH_DIR = "./LOG/";
+    private String RESULT_DIR = "./RESULT/";
     private String agree = "";
     private List<Integer> startPoint = new ArrayList<Integer>();
     private List<Integer> endPoint = new ArrayList<Integer>();
@@ -36,9 +36,28 @@ public class ExtractRequest {
         return agree;
     }
 
+    ExtractRequest() {
+
+    }
+    ExtractRequest(String config){
+        try {
+            File f = new File(config);
+            if (f.exists()) {
+                FileInputStream fis = new FileInputStream(config);
+                Properties conf = new Properties();
+                conf.load(fis);
+                PATH_DIR = conf.getProperty("LOG_DIR");
+                RESULT_DIR = conf.getProperty("RESULT_DIR");
+            }
+        }
+        catch (IOException ioe) {
+            System.out.println("Trouble reading from the file: " + ioe.getMessage());
+        }
+
+    };
+
     //чтение файлов директории
     public void findFile() {
-        //checkPATH();
         deleteResultFile(); //удалить результат предыдущей работы
         File dir = checkPATH();
         String[] _file = dir.list();
