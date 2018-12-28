@@ -14,6 +14,8 @@ public class ExtractRequest {
     // final String PATH_DIR = "c:\\WORK\\Java\\FormatFile\\";
     private String PATH_DIR = "./LOG/";
     private String RESULT_DIR = "./RESULT/";
+    private String MASK_START = "dess";
+    private String MASK_END = ".txt";
     private String agree = "";
     private List<Integer> startPoint = new ArrayList<Integer>();
     private List<Integer> endPoint = new ArrayList<Integer>();
@@ -46,8 +48,24 @@ public class ExtractRequest {
                 FileInputStream fis = new FileInputStream(config);
                 Properties conf = new Properties();
                 conf.load(fis);
-                PATH_DIR = conf.getProperty("LOG_DIR");
-                RESULT_DIR = conf.getProperty("RESULT_DIR");
+                PATH_DIR = conf.getProperty("LOG_DIR",PATH_DIR);
+                RESULT_DIR = conf.getProperty("RESULT_DIR",RESULT_DIR);
+                MASK_START = conf.getProperty("MASK_BEGIN",MASK_START);
+                MASK_END = conf.getProperty("MASK_END",MASK_END);
+            }
+            //если файла нет - создать в него и поместить конфиг по-умолчанию
+            else{
+                f.createNewFile();
+                FileWriter fw = new FileWriter(f, true);
+                fw.write("LOG_DIR=./LOG/");
+                fw.append('\n');
+                fw.write("RESULT_DIR=./RESULT/");
+                fw.append('\n');
+                fw.write("MASK_BEGIN = dess");
+                fw.append('\n');
+                fw.write("MASK_END = .txt");
+                fw.append('\n');
+                fw.close();
             }
         }
         catch (IOException ioe) {
@@ -62,7 +80,7 @@ public class ExtractRequest {
         File dir = checkPATH();
         String[] _file = dir.list();
         for (int i = 0; i < _file.length; i++) {
-            if (_file[i].endsWith(".txt") && _file[i].startsWith("dess")) {
+            if (_file[i].endsWith(MASK_END) && _file[i].startsWith(MASK_START)) {
                 System.out.println(_file[i]);
                 readFile(PATH_DIR + _file[i]);
             }
